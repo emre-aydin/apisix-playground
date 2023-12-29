@@ -11,6 +11,7 @@ deploy-apisix:
 	helm repo add apisix https://charts.apiseven.com
 	helm repo update
 	helm upgrade --install apisix apisix/apisix \
+	  --version 2.5.0 \
 	  --create-namespace \
 	  --namespace ingress-apisix \
 	  --set gateway.http.enabled=true \
