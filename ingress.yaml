@@ -1,0 +1,25 @@
+# use v1beta1 if your Kubernetes cluster version is older than v1.19.0
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: httpserver-ingress
+  namespace: ingress-apisix
+spec:
+  defaultBackend:
+    service:
+      name: httpbin
+      port:
+        number: 8080
+  # we use APISIX Ingress and it watches Ingress resources with "apisix" ingressClassName
+  ingressClassName: apisix
+  rules:
+  - host: local.httpbin.org
+    http:
+      paths:
+        - backend:
+            service:
+              name: httpbin
+              port:
+                number: 8080
+          pathType: Prefix
+          path: /

@@ -1,0 +1,16 @@
+# This is only for testing exposing httpbin as a service directly, without any ingress or apisix
+apiVersion: v1
+kind: Service
+metadata:
+  name: httpbin
+  namespace: ingress-apisix
+spec:
+  selector:
+    app: httpbin
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 30950
+  type: NodePort
+  
