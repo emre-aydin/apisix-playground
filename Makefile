@@ -1,6 +1,3 @@
-# Example Makefile
-
-# Phony targets are tasks that are not actual files
 .PHONY: create-cluster delete-cluster deploy-apisix deploy-httpbin deploy-route test
 
 create-cluster:
@@ -9,20 +6,25 @@ create-cluster:
 delete-cluster:
 	kind delete cluster --name apisix-playground
 
-deploy-httpbin:
-	kubectl create namespace ingress-apisix
-	kubectl apply -f httpbin.yaml
-	kubectl apply -f httpbin-service-clusterip.yaml
-
 deploy-apisix:
-	helm install apisix apisix/apisix \
-	  --set service.type=NodePort \
-      --set service.port=30950 \
-	  --set ingress-controller.enabled=true \
+	helm repo add bitnami https://charts.bitnami.com/bitnami
+	helm repo add apisix https://charts.apiseven.com
+	helm repo update
+	helm upgrade --install apisix apisix/apisix \
 	  --create-namespace \
 	  --namespace ingress-apisix \
+	  --set gateway.http.enabled=true \
+	  --set gateway.type=NodePort \
+	  --set gateway.http.nodePort="30950" \
+	  --set ingress-controller.enabled=true \
 	  --set ingress-controller.config.apisix.serviceNamespace=ingress-apisix \
 	  --set ingress-controller.config.apisix.adminAPIVersion=v3
+	# Apisix Helm chart doesn't let us specify the NodePort to use
+	kubectl patch service apisix-gateway -n ingress-apisix --type='json' -p='[{"op":"replace","path":"/spec/ports/0/nodePort","value":30950}]'
+
+deploy-httpbin:
+	kubectl apply -f httpbin.yaml
+	kubectl apply -f httpbin-service-clusterip.yaml
 
 deploy-route:
 	kubectl apply -f route.yaml
