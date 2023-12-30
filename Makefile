@@ -1,4 +1,4 @@
-.PHONY: create-cluster delete-cluster deploy-apisix deploy-httpbin deploy-route test
+.PHONY: create-cluster delete-cluster deploy-apisix deploy-httpbin deploy-route test deploy-keycloak
 
 create-cluster:
 	kind create cluster --config kind-cluster.yaml
@@ -11,6 +11,7 @@ deploy-apisix:
 	helm repo add apisix https://charts.apiseven.com
 	helm repo update
 	helm upgrade --install apisix apisix/apisix \
+	  --kube-context kind-apisix-playground \
 	  --version 2.5.0 \
 	  --create-namespace \
 	  --namespace ingress-apisix \
@@ -24,11 +25,14 @@ deploy-apisix:
 	kubectl patch service apisix-gateway -n ingress-apisix --type='json' -p='[{"op":"replace","path":"/spec/ports/0/nodePort","value":30950}]'
 
 deploy-httpbin:
-	kubectl apply -f httpbin.yaml
-	kubectl apply -f httpbin-service-clusterip.yaml
+	kubectl apply --context kind-apisix-playground -f httpbin.yaml
+	kubectl apply --context kind-apisix-playground -f httpbin-service-clusterip.yaml
 
 deploy-route:
-	kubectl apply -f route.yaml
+	kubectl apply --context kind-apisix-playground -f route.yaml
 
 test:
 	curl --location --request GET "http://127.0.0.1/get?foo1=bar1&foo2=bar2" -H "Host: local.httpbin.org"
+
+deploy-keycloak:
+	kubectl apply --context kind-apisix-playground -f keycloak.yaml
