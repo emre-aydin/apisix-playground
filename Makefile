@@ -1,4 +1,4 @@
-.PHONY: create-cluster delete-cluster deploy-apisix deploy-httpbin deploy-route test deploy-keycloak
+.PHONY: create-cluster delete-cluster deploy-apisix deploy-httpbin test deploy-keycloak
 
 create-cluster:
 	kind create cluster --config kind-cluster.yaml
@@ -27,8 +27,6 @@ deploy-apisix:
 deploy-httpbin:
 	kubectl apply --context kind-apisix-playground -f httpbin.yaml
 	kubectl apply --context kind-apisix-playground -f httpbin-service-clusterip.yaml
-
-deploy-route:
 	kubectl apply --context kind-apisix-playground -f route.yaml
 
 test:
@@ -36,3 +34,4 @@ test:
 
 deploy-keycloak:
 	kubectl apply --context kind-apisix-playground -f keycloak.yaml
+	kubectl apply --context kind-apisix-playground -f keycloak-route.yaml

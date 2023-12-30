@@ -1,0 +1,16 @@
+apiVersion: apisix.apache.org/v2
+kind: ApisixRoute
+metadata:
+  name: keycloak-route
+  namespace: ingress-apisix
+spec:
+  http:
+  - name: rule1
+    match:
+      hosts:
+      - local.keycloak
+      paths:
+      - /*
+    backends:
+       - serviceName: keycloak
+         servicePort: 8080
