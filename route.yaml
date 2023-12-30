@@ -14,3 +14,4 @@ spec:
     backends:
        - serviceName: httpbin
          servicePort: 80
+    plugin_config_name: oidc-plugin-config

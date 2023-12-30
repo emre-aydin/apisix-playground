@@ -1,6 +1,7 @@
-- [ ] Deploy KeyCloak
-- [ ] Configure realm, OIDC client and users
-- [ ] Integrate APISIX gateway with KeyCloak and require authentication for httpbin
+- [x] Deploy KeyCloak
+- [x] Configure realm, OIDC client and users
+- [x] Integrate APISIX gateway with KeyCloak and require authentication for httpbin
+- [ ] Add KeyCloak realm, OIDC client and user via script (currently added via UI)
 - [ ] Implement TLS termination using APISIX for httpbin
 - [ ] Deploy a service that communicates over TCP (not HTTP)
 - [ ] Implement TLS termination and authentication with APISIX
