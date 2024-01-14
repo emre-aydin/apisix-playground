@@ -9,8 +9,11 @@ spec:
     enable: true
     config:
       bearer_only: false
-      client_id: "myclient"
-      client_secret: "LhKelre9pHZRsVZvi17gk483nrPHvIl0"
+      client_id: "apisix-client"
+      # Local installation, OK to expose secret.
+      client_secret: "SH538NduNHAadOaFTts4i5CobCHFEcsk"
       discovery: "http://keycloak:8080/realms/myrealm/.well-known/openid-configuration"
       scope: "openid profile"
       redirect_uri: "http://local.httpbin.org/anything/callback"
+      set_userinfo_header: true
+      set_id_token_header: true
