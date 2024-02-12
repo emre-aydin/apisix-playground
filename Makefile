@@ -1,7 +1,7 @@
-.PHONY: create-cluster delete-cluster deploy-apisix deploy-httpbin test deploy-keycloak
+.PHONY: create-cluster delete-cluster deploy-apisix deploy-httpbin deploy-keycloak test
 
 create-cluster:
-	kind create cluster --config kind-cluster.yaml
+	kind create cluster --config kind/cluster.yaml
 
 delete-cluster:
 	kind delete cluster --name apisix-playground
@@ -24,14 +24,18 @@ deploy-apisix:
 	# Apisix Helm chart doesn't let us specify the NodePort to use
 	kubectl patch service apisix-gateway -n ingress-apisix --type='json' -p='[{"op":"replace","path":"/spec/ports/0/nodePort","value":30950}]'
 
-deploy-httpbin:
-	kubectl apply --context kind-apisix-playground -f httpbin.yaml
-	kubectl apply --context kind-apisix-playground -f httpbin-service-clusterip.yaml
-	kubectl apply --context kind-apisix-playground -f route.yaml
+deploy-oidc-plugin:
+	kubectl apply --context kind-apisix-playground -f apisix/oidc-plugin-config.yaml
 
-test:
-	curl --location --request GET "http://127.0.0.1/get?foo1=bar1&foo2=bar2" -H "Host: local.httpbin.org"
+deploy-httpbin:
+	kubectl apply --context kind-apisix-playground -f httpbin/deployment.yaml
+	kubectl apply --context kind-apisix-playground -f httpbin/service.yaml
+	kubectl apply --context kind-apisix-playground -f httpbin/route.yaml
 
 deploy-keycloak:
-	kubectl apply --context kind-apisix-playground -f keycloak.yaml
-	kubectl apply --context kind-apisix-playground -f keycloak-route.yaml
+	kubectl apply --context kind-apisix-playground -f keycloak/deployment.yaml
+	kubectl apply --context kind-apisix-playground -f keycloak/service.yaml
+	kubectl apply --context kind-apisix-playground -f keycloak/route.yaml
+
+test:
+	curl --location --request GET "http://local.httpbin.org/get?foo1=bar1&foo2=bar2" -H "Host: local.httpbin.org"

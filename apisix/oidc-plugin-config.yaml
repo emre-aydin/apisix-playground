@@ -1,0 +1,26 @@
+apiVersion: apisix.apache.org/v2
+kind: ApisixPluginConfig
+metadata:
+  name: oidc-plugin-config
+  namespace: ingress-apisix
+spec:
+  plugins:
+  - name: openid-connect
+    enable: true
+    config:
+      client_id: "apisix-client"
+      # Local installation, OK to expose secret.
+      client_secret: "d0b8122f-8dfb-46b7-b68a-f5cc4e25d000"
+      discovery: "http://keycloak:8080/realms/myrealm/.well-known/openid-configuration"
+      scope: "openid profile"
+      redirect_uri: "http://local.httpbin.org/anything/callback"
+      set_userinfo_header: true
+      set_id_token_header: true
+      # https://apisix.apache.org/docs/apisix/plugins/openid-connect/
+      # Authentication between Browser and Identity Providers: Set bearer_only to false. After successful
+      # authentication, this plugin can obtain and manage the token in the cookie, and subsequent requests will use the
+      # token. In this mode, the user session will be stored in the browser as a cookie and this data is encrypted,
+      # so you have to set a key for encryption via session.secret.
+      bearer_only: false
+      session:
+        secret: some-secret-value
