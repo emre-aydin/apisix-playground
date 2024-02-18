@@ -41,7 +41,9 @@ make deploy-keycloak
 
 ## Create KeyCloak Client
 
-TODO: Exec `keycloak/create-client.sh` via kubectl exec
+```shell
+make create-keycloak-client
+```
 
 ## Test Access to Service
 

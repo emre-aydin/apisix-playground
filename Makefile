@@ -1,4 +1,4 @@
-.PHONY: create-cluster delete-cluster deploy-apisix deploy-httpbin deploy-keycloak test
+.PHONY: create-cluster delete-cluster deploy-apisix deploy-httpbin deploy-keycloak undeploy-keycloak create-keycloak-client test
 
 create-cluster:
 	kind create cluster --config kind/cluster.yaml
@@ -36,6 +36,16 @@ deploy-keycloak:
 	kubectl apply --context kind-apisix-playground -f keycloak/deployment.yaml
 	kubectl apply --context kind-apisix-playground -f keycloak/service.yaml
 	kubectl apply --context kind-apisix-playground -f keycloak/route.yaml
+
+undeploy-keycloak:
+	kubectl delete --context kind-apisix-playground -f keycloak/deployment.yaml
+	kubectl delete --context kind-apisix-playground -f keycloak/service.yaml
+	kubectl delete --context kind-apisix-playground -f keycloak/route.yaml
+
+create-keycloak-client:
+	kubectl exec --context kind-apisix-playground -n ingress-apisix \
+		`kubectl get pod --selector app=keycloak  --context kind-apisix-playground -n ingress-apisix -o=jsonpath='{.items[0].metadata.name}'` \
+		-- /bin/sh -c "`cat keycloak/create-client.sh`"
 
 test:
 	curl --location --request GET "http://local.httpbin.org/get?foo1=bar1&foo2=bar2" -H "Host: local.httpbin.org"

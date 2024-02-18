@@ -2,7 +2,7 @@
 
 REALM=myrealm
 cd /opt/keycloak/bin || exit 1
-./kcadm.sh config credentials --server http://localhost:8080 --user admin --password admin
+./kcadm.sh config credentials --server http://localhost:8080 --realm master --user admin --password admin
 ./kcadm.sh create realms -s realm=$REALM -s enabled=true
 ./kcadm.sh create clients \
   -r $REALM \
