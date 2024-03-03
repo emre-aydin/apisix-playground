@@ -48,7 +48,7 @@ make create-keycloak-client
 ## Test Access to Service
 
 Open up your browser and navigate to http://local.httpbin.org. This will ask you to log in. Once you enter credentials
-`testuser/testpassword`, you will be navigate to the main page.
+`testuser/testpassword`, you will be navigated to the main page.
 
 APISIX OIDC plugin obtains the token and manages it in the cookie. You can open the page 
 `http://local.httpbin.org/headers` and observe that `X-Access-Token` and `X-Userinfo` request headers are set. 
